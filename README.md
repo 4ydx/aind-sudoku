@@ -3,11 +3,13 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: When a naked twin event occurs, all peers outside of the two twins boxes have the values present in the twins removed.  In combination with other strategies, this
+   shrinks the problem space, leading to a solution with less effort.  This strategy is applicable to all sudoku.
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: *Student should provide answer here*
+A: As with the Naked Twins problem, a diagonal sudoku scenario limits the scope of possible values present in the diagonal boxes.  In combination with other strategies, this
+   shrinks the problem space, leading to a solution with less effort.  This is a new constraint placed on top of the typical sudoku ruleset.
 
 ### Install
 
