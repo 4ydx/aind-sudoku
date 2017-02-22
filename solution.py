@@ -12,15 +12,16 @@ def assign_value(values, box, value):
 
 def naked_twins(values):
     """Eliminate values using the naked twins strategy.
+
+    Any unit with two blocks that have the same two possible values, EG "46",
+    will have all other peer blocks in the unit prune, in this case, "4" and "6" from their possible values.
+
     Args:
 	values(dict): a dictionary of the form {'box_name': '123456789', ...}
 
     Returns:
 	the values dictionary with the naked twins eliminated from peers.
     """
-
-    # Find all instances of naked twins
-    # Eliminate the naked twins as possibilities for their peers
     for box, unitList in units.items():
         currentValue = values[box]
         if len(currentValue) != 2:
@@ -31,13 +32,11 @@ def naked_twins(values):
             for otherBox in unit:
                 if box != otherBox and currentValue == values[otherBox]:
                     removeValues = currentValue
-                    print("twin", box, otherBox, "value", removeValues)
             if len(removeValues) == 2:
                 for otherBox in unit:
                     if len(values[otherBox]) > 2:
-                        print("possible twin for", otherBox, "replace", removeValues, values[otherBox])
-                        values[otherBox] = ''.join( c for c in values[otherBox] if c not in removeValues )
-                        print("result", otherBox, values[otherBox])
+                        # values[otherBox] = ''.join( c for c in values[otherBox] if c not in removeValues )
+                        assign_value(values, otherBox, ''.join( c for c in values[otherBox] if c not in removeValues ))
     return values
 
 def cross(A, B):
@@ -85,7 +84,8 @@ def eliminate(values):
         value = values[box]
         if len(value) == 1:
             for peer in peers[box]:
-                values[peer] = values[peer].replace(value, "")
+                # values[peer] = values[peer].replace(value, "")
+                assign_value(values, peer, values[peer].replace(value, ""))
     return values
 
 def only_choice(values):
@@ -106,7 +106,8 @@ def only_choice(values):
         for integer in usedIntegers:
             if len(usedIntegers[integer]) == 1:
                 box = usedIntegers[integer][0]
-                values[box] = integer
+                # values[box] = integer
+                assign_value(values, box, integer)
     return values
 
 def reduce_puzzle(values):
@@ -123,14 +124,8 @@ def reduce_puzzle(values):
         solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
 
         values = eliminate(values)
-        print("\n-- eliminate")
-        display(values)
         values = only_choice(values)
-        print("\n-- only_choice")
-        display(values)
         values = naked_twins(values)
-        print("\n-- naked_twins")
-        display(values)
 
 	# Check how many boxes have a determined value, to compare
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
@@ -174,7 +169,8 @@ def search(values):
     # Now use recursion to solve each one of the resulting sudokus, and if one returns a value (not False), return that answer!
     for integer in val:
         v = values.copy()
-        v[box] = integer
+        # v[box] = integer
+        assign_value(v, box, integer)
         r = search(v)
         if r:
             return r
@@ -189,7 +185,6 @@ def solve(grid):
 	The dictionary representation of the final sudoku grid. False if no solution exists.
     """
     values = grid_values(grid)
-    display(values)
     solved = search(values)
     return solved
 
@@ -198,36 +193,32 @@ Global values that describe the layout of the sudoku board and
 relationships between individual points on the board (aka 'boxes')
 and their peers.
 """
-rowNames = "ABCDEFGHI"
-colNames = "123456789"
-boxes    = cross(rowNames, colNames)
-rows     = [cross(i, colNames) for i in rowNames]
-cols     = [cross(rowNames, i) for i in colNames]
-squares  = [cross(row, column) for column in ["123", "456", "789"] for row in ["ABC", "DEF", "GHI"]]
-unitlist = rows + cols + squares
-units    = dict((s, [u for u in unitlist if s in u]) for s in boxes)
-peers    = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
+rowNames  = "ABCDEFGHI"
+colNames  = "123456789"
+boxes     = cross(rowNames, colNames)
+rows      = [cross(i, colNames) for i in rowNames]
+cols      = [cross(rowNames, i) for i in colNames]
+squares   = [cross(row, column) for column in ["123", "456", "789"] for row in ["ABC", "DEF", "GHI"]]
+diagonals = [[a+b for a, b in zip(rowNames, colNames)], [a+b for a, b in zip(rowNames, colNames[::-1])]]
+unitlist  = rows + cols + squares + diagonals
+units     = dict((s, [u for u in unitlist if s in u]) for s in boxes)
+peers     = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
 if __name__ == '__main__':
-    #diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
-    #display(solve(diag_sudoku_grid))
+    diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
+    display(solve(diag_sudoku_grid))
 
-    # test solvability of a basic puzzle
-    #sudoku_puzzle = '..3.2.6..9..3.5..1..18.64....81.29..7.......8..67.82....26.95..8..2.3..9..5.1.3..'
-    #print("483921657967345821251876493548132976729564138136798245372689514814253769695417382")
+    # test solvability of other basic puzzles
+    #
+    # sudoku_puzzle = '..3.2.6..9..3.5..1..18.64....81.29..7.......8..67.82....26.95..8..2.3..9..5.1.3..'
+    # print("483921657967345821251876493548132976729564138136798245372689514814253769695417382")
+    #
+    # sudoku_puzzle = '4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......'
+    # print("417369825632158947958724316825437169791586432346912758289643571573291684164875293")
+    #
+    # solved = solve(sudoku_puzzle)
+    # display(solved)
 
-    sudoku_puzzle = '4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......'
-    #print("417369825632158947958724316825437169791586432346912758289643571573291684164875293")
-
-    solved = solve(sudoku_puzzle)
-
-    #print("483921657967345821251876493548132976729564138136798245372689514814253769695417382")
-    print("417369825632158947958724316825437169791586432346912758289643571573291684164875293")
-    for s in solved:
-        print(solved[s], end='')
-    print("")
-
-"""
     try:
         from visualize import visualize_assignments
         visualize_assignments(assignments)
@@ -236,4 +227,3 @@ if __name__ == '__main__':
         pass
     except:
         print('We could not visualize your board due to a pygame issue. Not a problem! It is not a requirement.')
-"""

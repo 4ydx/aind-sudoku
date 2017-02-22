@@ -9,7 +9,7 @@ A: When a naked twin event occurs, all peers outside of the two twins boxes have
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
 A: As with the Naked Twins problem, a diagonal sudoku scenario limits the scope of possible values present in the diagonal boxes.  In combination with other strategies, this
-   shrinks the problem space, leading to a solution with less effort.  This is a new constraint placed on top of the typical sudoku ruleset.
+   shrinks the problem space, leading to a solution with less effort.  This is a new unit, according to the project terminology, that extends the typical sudoku units (vertical, horizontal, grid).
 
 ### Install
 
