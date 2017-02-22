@@ -21,6 +21,24 @@ def naked_twins(values):
 
     # Find all instances of naked twins
     # Eliminate the naked twins as possibilities for their peers
+    for box, unitList in units.items():
+        currentValue = values[box]
+        if len(currentValue) != 2:
+            continue
+
+        for unit in unitList:
+            removeValues = ""
+            for otherBox in unit:
+                if box != otherBox and currentValue == values[otherBox]:
+                    removeValues = currentValue
+                    print("twin", box, otherBox, "value", removeValues)
+            if len(removeValues) == 2:
+                for otherBox in unit:
+                    if len(values[otherBox]) > 2:
+                        print("possible twin for", otherBox, "replace", removeValues, values[otherBox])
+                        values[otherBox] = ''.join( c for c in values[otherBox] if c not in removeValues )
+                        print("result", otherBox, values[otherBox])
+    return values
 
 def cross(A, B):
     "Cross product of elements in A and elements in B."
@@ -104,11 +122,15 @@ def reduce_puzzle(values):
 	# Check how many boxes have a determined value
         solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
 
-	# Your code here: Use the Eliminate Strategy
         values = eliminate(values)
-
-	# Your code here: Use the Only Choice Strategy
+        print("\n-- eliminate")
+        display(values)
         values = only_choice(values)
+        print("\n-- only_choice")
+        display(values)
+        values = naked_twins(values)
+        print("\n-- naked_twins")
+        display(values)
 
 	# Check how many boxes have a determined value, to compare
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
@@ -118,6 +140,7 @@ def reduce_puzzle(values):
 
 	# Sanity check, return False if there is a box with zero available values:
         if len([box for box in values.keys() if len(values[box]) == 0]):
+            print("empty!!!", [box for box in values.keys() if len(values[box]) == 0])
             return False
     return values
 
@@ -166,6 +189,7 @@ def solve(grid):
 	The dictionary representation of the final sudoku grid. False if no solution exists.
     """
     values = grid_values(grid)
+    display(values)
     solved = search(values)
     return solved
 
@@ -189,15 +213,19 @@ if __name__ == '__main__':
     #display(solve(diag_sudoku_grid))
 
     # test solvability of a basic puzzle
-    sudoku_puzzle = '..3.2.6..9..3.5..1..18.64....81.29..7.......8..67.82....26.95..8..2.3..9..5.1.3..'
-    print("483921657967345821251876493548132976729564138136798245372689514814253769695417382")
+    #sudoku_puzzle = '..3.2.6..9..3.5..1..18.64....81.29..7.......8..67.82....26.95..8..2.3..9..5.1.3..'
+    #print("483921657967345821251876493548132976729564138136798245372689514814253769695417382")
+
+    sudoku_puzzle = '4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......'
+    #print("417369825632158947958724316825437169791586432346912758289643571573291684164875293")
 
     solved = solve(sudoku_puzzle)
+
+    #print("483921657967345821251876493548132976729564138136798245372689514814253769695417382")
+    print("417369825632158947958724316825437169791586432346912758289643571573291684164875293")
     for s in solved:
         print(solved[s], end='')
     print("")
-
-    #display(solve(sudoku_puzzle))
 
 """
     try:
