@@ -200,30 +200,14 @@ rows      = [cross(i, colNames) for i in rowNames]
 cols      = [cross(rowNames, i) for i in colNames]
 squares   = [cross(row, column) for column in ["123", "456", "789"] for row in ["ABC", "DEF", "GHI"]]
 diagonals = [[a+b for a, b in zip(rowNames, colNames)], [a+b for a, b in zip(rowNames, colNames[::-1])]]
-unitlist  = rows + cols + squares # + diagonals
+unitlist  = rows + cols + squares + diagonals
 units     = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers     = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
 if __name__ == '__main__':
-    # the following require that the diagonal constraint *not* be in affect
-    hard = "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......"
-    hard = "52...6.........7.13...........4..8..6......5...........418.........3..2...87....."
-    display(solve(hard))
-
     # the following requires the diagonal constraint to solve
-    #diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
-    #display(solve(diag_sudoku_grid))
-
-    # test solvability of other basic puzzles - no diagonal constraint
-    #
-    # sudoku_puzzle = '..3.2.6..9..3.5..1..18.64....81.29..7.......8..67.82....26.95..8..2.3..9..5.1.3..'
-    # print("483921657967345821251876493548132976729564138136798245372689514814253769695417382")
-    #
-    # sudoku_puzzle = '4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......'
-    # print("417369825632158947958724316825437169791586432346912758289643571573291684164875293")
-    #
-    # solved = solve(sudoku_puzzle)
-    # display(solved)
+    diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
+    display(solve(diag_sudoku_grid))
 
     try:
         from visualize import visualize_assignments
