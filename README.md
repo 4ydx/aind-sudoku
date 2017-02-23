@@ -9,12 +9,12 @@ A:
 
 Solving puzzles can be accomplished using a brute force approach.  That is,
 simply try all possibilities available.  In the case of a sudoku puzzle this
-produces a very large set of possibilities that would take a considerable amount
-of time to solve.  In order to overcome this, constraint propagation is used.
-Constraint propogation is simply a process by which the number of possibilities
-that need to be explored can be reduced.  In the case of sudoku the very rules
-upon which the game is designed offer guidance as to how to write code that
-exploits these constraints.
+produces a very large set of possibilities that would take a considerable
+amount of time to solve.  In order to overcome this, constraint propagation is
+used.  Constraint propogation is simply a process by which the number of
+possibilities that need to be explored can be reduced.  In the case of sudoku
+the very rules upon which the game is designed offer guidance as to how to
+write code that exploits these constraints.
 
 For instance, each row in a sudoku puzzle must have all numbers from 1 to 9
 represented once in any order.  Using this knowledge any row in a sudoku puzzle
@@ -22,20 +22,20 @@ with a single digit automatically allows one to remove all representations of
 that number from all other points in the row, excluding the original cell with
 the single digit.  This approach can also be applied to columns and grids, the
 3x3 clusters in the puzzle.  In fact all approaches such as this one will be
-applied to rows, columns, and 3x3 clusters so that solving the puzzle can become
-more efficient and effective.
+applied to rows, columns, and 3x3 clusters so that solving the puzzle can
+become more efficient and effective.
 
 Once several constraint formulae are conceived they can be used together
-iteratively to search the solution space, a tree, in a depth first manner.  If a
-particular attempt is found to be unusable, the next branch in the tree is
+iteratively to search the solution space, a tree, in a depth first manner.  If
+a particular attempt is found to be unusable, the next branch in the tree is
 explored until, in the worst case, all possible branches have been evaluated.
 
 Naked Twins is an example of using the knowledge of sudoku's rules towards
-constraint propogation.  Whenever a unit (row, column, or 3x3 grid) contains two
-cells that have the same pairs of numbers, any other cells in the unit can no
-longer contains that pair.  This is simply because a sudoku puzzle requires
-uniqueness in the numbers 1 to 9 so each of the two cells must have a number.
-Naked Twins is applicable to all sudoku puzzles.
+constraint propogation.  Whenever a unit (row, column, or 3x3 grid) contains
+two cells that have the same pair of numbers, any other cells in the unit can
+no longer contain that pair.  This is simply because a sudoku puzzle requires
+uniqueness in the numbers 1 to 9 so each of the two cells must have one of the
+numbers in the pair.  Naked Twins is applicable to all sudoku puzzles.
 
 # Question 2 (Diagonal Sudoku) 
 
@@ -72,8 +72,8 @@ If not, please see how to download pygame
 ### Code
 
 * `solutions.py` - You'll fill this in as part of your solution.
-* `solution_test.py` - Do not modify this. You can test your solution by running
-  `python solution_test.py`.
+* `solution_test.py` - Do not modify this. You can test your solution by
+  running `python solution_test.py`.
 * `PySudoku.py` - Do not modify this. This is code for visualizing your
   solution.
 * `visualize.py` - Do not modify this. This is code for visualizing your
